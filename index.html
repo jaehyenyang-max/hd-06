@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>양양이의 프로젝트 다꾸 관리실</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap');
+:root{
+ --pink:#f6a9c8;--pink2:#ffe0ec;--rose:#d96d9b;--lav:#dcd4ff;--lav2:#f0edff;
+ --yellow:#ffe9a8;--mint:#d7f1e8;--cream:#fffaf5;--ink:#594957;--muted:#9b8998;
+ --line:#f2dce7;--white:#fff;--shadow:0 12px 30px rgba(196,126,157,.12)
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:#fff7fa;background-image:radial-gradient(#f7cddd 1px,transparent 1px);background-size:18px 18px;color:var(--ink);font-family:'Gowun Dodum',sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:1180px;margin:auto;padding:28px 22px 50px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;color:var(--muted);font-size:13px}
+.logo{font-family:'Jua';color:var(--rose);letter-spacing:.4px}
+.date-pill{background:#fff;border:1px solid var(--line);border-radius:99px;padding:8px 14px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(120deg,#ffe4ee,#f3eaff 65%,#fff1d6);border:2px solid #fff;border-radius:30px;padding:34px 36px;box-shadow:var(--shadow);margin-bottom:22px}
+.hero:before{content:"✿";position:absolute;right:7%;top:-25px;font-size:145px;color:#fff8;transform:rotate(15deg)}
+.hero:after{content:"♡";position:absolute;right:24%;bottom:-35px;font-size:110px;color:#fff9;transform:rotate(-15deg)}
+.hero-inner{position:relative;z-index:1;max-width:720px}
+.eyebrow{display:inline-block;background:#fff9;border:1px dashed #e9a9c3;border-radius:99px;padding:6px 12px;font-size:12px;color:#b45f87;margin-bottom:12px}
+h1{font-family:'Jua';font-size:clamp(30px,5vw,48px);line-height:1.2;margin:0 0 10px;color:#754c69}
+.hero p{margin:0;color:#876b80;font-size:15px;line-height:1.7}
+.hero-sticker{position:absolute;right:7%;bottom:24px;font-size:46px;transform:rotate(8deg);filter:drop-shadow(0 5px 4px #dca9bf66)}
+.grid{display:grid;grid-template-columns:1.35fr .85fr;gap:18px;align-items:start}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:23px;padding:21px;box-shadow:var(--shadow);position:relative}
+.card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
+.card-title h2{font:20px 'Jua';margin:0;color:#76566f}
+.tiny-label{font-size:11px;background:var(--pink2);color:#b65f88;padding:5px 9px;border-radius:99px;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.stat{border-radius:18px;padding:15px;background:#fff7fa;border:1px dashed #f0c8d9}
+.stat:nth-child(2){background:#f7f4ff;border-color:#d9d0fa}
+.stat:nth-child(3){background:#fff9e9;border-color:#f5df9f}
+.stat .emoji{font-size:21px}.stat strong{display:block;font:25px 'Jua';margin:7px 0 2px;color:#79566e}
+.stat span{font-size:12px;color:var(--muted)}
+.progress-head{display:flex;justify-content:space-between;font-size:13px;margin:8px 0}
+.progress-track{height:13px;border-radius:99px;background:#f8eaf0;overflow:hidden;border:1px solid #f5dce7}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#f4a4c4,#c8b9f5);border-radius:99px;transition:width .3s}
+.progress-note{font-size:12px;color:var(--muted);margin-top:9px}
+.task-list{display:flex;flex-direction:column;gap:9px}
+.task{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:15px;background:#fffbfd;border:1px solid #f6e7ee}
+.task.done{opacity:.62;background:#f8f7fb}
+.task input[type=checkbox]{accent-color:#df83aa;width:17px;height:17px;flex-shrink:0}
+.task-name{flex:1;font-size:14px;min-width:0;overflow-wrap:anywhere}
+.task.done .task-name{text-decoration:line-through;color:#a99aa7}
+.tag{font-size:11px;border-radius:99px;padding:4px 8px;background:#f0edff;color:#8472bd;white-space:nowrap}
+.tag.work{background:#fff0d0;color:#a47b36}.tag.urgent{background:#ffe6ec;color:#c66a89}
+.del{border:0;background:transparent;color:#c5a9b8;font-size:16px;padding:2px 5px}
+.add-row{display:flex;gap:8px;margin-top:13px}
+.add-row input{min-width:0;flex:1;border:1px solid var(--line);border-radius:12px;padding:11px 12px;outline:none;background:#fffafd}
+.add-row input:focus,textarea:focus{border-color:#e89abb;box-shadow:0 0 0 3px #fbe6ef}
+.add-btn{border:0;border-radius:12px;padding:0 16px;background:#e98db5;color:#fff;font-family:'Jua';font-size:14px}
+.side-stack{display:flex;flex-direction:column;gap:18px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.day{border-radius:12px;background:#fff8fb;text-align:center;padding:9px 2px;border:1px solid #f5e4ec;font-size:11px;color:#9a8494}
+.day b{display:block;font:16px 'Jua';margin-top:5px;color:#76566f}
+.day.today{background:#fce1ec;border:1px solid #e9a5c1}
+.day .dot{display:block;width:5px;height:5px;border-radius:50%;background:#d98aae;margin:5px auto 0}
+.schedule{display:flex;flex-direction:column;gap:10px}
+.event{display:flex;gap:11px;align-items:flex-start}
+.event-time{min-width:52px;font:13px 'Jua';color:#b56c91;background:#fff0f6;border-radius:9px;padding:6px;text-align:center}
+.event-text{font-size:13px;line-height:1.45;padding-top:4px}
+.event-text small{display:block;color:#a895a3;font-size:11px;margin-top:3px}
+.memo{width:100%;min-height:112px;resize:vertical;border:1px dashed #e9bfd1;border-radius:14px;background:repeating-linear-gradient(#fffafd 0,#fffafd 27px,#f8e8ef 28px);padding:11px 13px;line-height:28px;outline:none;color:var(--ink)}
+.memo-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:11px;color:#ae9ba8}
+.save-dot{color:#71a995}
+.quote{margin-top:18px;text-align:center;color:#a7869b;font-size:13px}
+.quote b{color:#d77da4;font-family:'Jua';font-weight:normal}
+.footer{text-align:center;color:#b5a1af;font-size:11px;margin-top:24px}
+.sticker{position:absolute;right:18px;top:-12px;background:#fff0a9;border:2px solid white;border-radius:50%;width:42px;height:42px;display:grid;place-items:center;transform:rotate(10deg);box-shadow:0 4px 9px #d9b9a455;font-size:21px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.hero{padding:27px 23px}.hero-sticker{right:20px;bottom:15px;font-size:34px}.wrap{padding:18px 13px 35px}}
+@media(max-width:430px){.stats{gap:7px}.stat{padding:11px 9px}.stat strong{font-size:22px}.card{padding:16px}.topline{font-size:11px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topline"><div class="logo">୨୧ YANGYANG STUDIO</div><div class="date-pill" id="todayLabel">오늘도 차근차근 ✿</div></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">♡ MY LITTLE PROJECT ROOM ♡</div>
+      <h1>양양이의 프로젝트 관리실</h1>
+      <p>복잡한 일도 귀엽게 하나씩!<br>오늘의 할 일을 체크하고, 작은 성취를 모아봐요 🌷</p>
+    </div>
+    <div class="hero-sticker">🎀</div>
+  </header>
+
+  <section class="stats">
+    <div class="stat"><div class="emoji">🧸</div><strong id="totalCount">0</strong><span>전체 할 일</span></div>
+    <div class="stat"><div class="emoji">🌸</div><strong id="doneCount">0</strong><span>완료한 일</span></div>
+    <div class="stat"><div class="emoji">✨</div><strong id="leftCount">0</strong><span>남은 할 일</span></div>
+  </section>
+
+  <main class="grid">
+    <div class="main-stack">
+      <section class="card">
+        <div class="sticker">💗</div>
+        <div class="card-title"><h2>오늘의 프로젝트 진행률</h2><span class="tiny-label">GROW AT YOUR OWN PACE</span></div>
+        <div class="progress-head"><span>나의 반짝이는 진척도</span><b id="percent">0%</b></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-note" id="progressMessage">첫 번째 할 일을 등록해 볼까요?</div>
+      </section>
+
+      <section class="card" style="margin-top:18px">
+        <div class="card-title"><h2>📝 해야 할 일 리스트</h2><span class="tiny-label">TO-DO LIST</span></div>
+        <div class="task-list" id="taskList"></div>
+        <form class="add-row" id="taskForm">
+          <input id="taskInput" maxlength="80" placeholder="새로운 할 일을 적어주세요..." aria-label="새 할 일">
+          <button class="add-btn" type="submit">+ 추가</button>
+        </form>
+      </section>
+
+      <section class="card" style="margin-top:18px">
+        <div class="card-title"><h2>💌 양양이의 오늘 메모</h2><span class="tiny-label">LITTLE DIARY</span></div>
+        <textarea class="memo" id="memo" placeholder="아이디어, 회의 내용, 잊지 말아야 할 것들을 자유롭게 적어봐요."></textarea>
+        <div class="memo-foot"><span>여기에 적은 메모는 이 브라우저에 자동 저장돼요.</span><span class="save-dot" id="saveStatus">● 자동 저장</span></div>
+      </section>
+    </div>
+
+    <aside class="side-stack">
+      <section class="card">
+        <div class="card-title"><h2>🗓 이번 주 한눈에</h2><span class="tiny-label">WEEKLY</span></div>
+        <div class="week" id="weekGrid"></div>
+        <div class="quote">이번 주도 <b>나답게, 천천히!</b> 🌼</div>
+      </section>
+      <section class="card">
+        <div class="card-title"><h2>📌 프로젝트 루틴</h2><span class="tiny-label">MY FLOW</span></div>
+        <div class="schedule">
+          <div class="event"><div class="event-time">AM 9:00</div><div class="event-text">오늘 할 일 정리하기<small>우선순위부터 가볍게 체크</small></div></div>
+          <div class="event"><div class="event-time">AM 11:00</div><div class="event-text">집중 작업 타임<small>하나씩 끝내는 데 집중하기</small></div></div>
+          <div class="event"><div class="event-time">PM 2:00</div><div class="event-text">진행 상황 확인하기<small>막힌 부분은 메모해 두기</small></div></div>
+          <div class="event"><div class="event-time">PM 5:00</div><div class="event-text">오늘의 성과 기록하기<small>작은 진전도 충분히 멋져요</small></div></div>
+        </div>
+      </section>
+      <section class="card">
+        <div class="card-title"><h2>🌷 오늘의 응원 한마디</h2></div>
+        <p style="font-size:14px;line-height:1.8;margin:0;color:#8e7487">완벽하게 해내지 않아도 괜찮아. 오늘 한 걸음 내디딘 것만으로도 충분히 잘하고 있어! <b style="color:#d77da4">양양이 화이팅 ♡</b></p>
+      </section>
+    </aside>
+  </main>
+  <div class="footer">MADE WITH ♡ BY YANGYANG · 나만의 작은 프로젝트 다꾸 관리실</div>
+</div>
+<script>
+const initialTasks = [
+ {id:1,text:"이번 주 프로젝트 목표 정리하기",done:false,tag:"계획"},
+ {id:2,text:"진행 중인 업무 확인하기",done:false,tag:"업무"},
+ {id:3,text:"필요한 자료 및 파일 정리하기",done:true,tag:"정리"}
+];
+let tasks;
+try { tasks = JSON.parse(localStorage.getItem("yangyang_tasks")) || initialTasks; }
+catch(e){ tasks = initialTasks; }
+const $ = id => document.getElementById(id);
+function saveTasks(){localStorage.setItem("yangyang_tasks",JSON.stringify(tasks));render();}
+function render(){
+ const list=$("taskList"); list.innerHTML="";
+ tasks.forEach(task=>{
+  const row=document.createElement("div"); row.className="task"+(task.done?" done":"");
+  const check=document.createElement("input"); check.type="checkbox"; check.checked=task.done; check.setAttribute("aria-label","완료 여부");
+  check.addEventListener("change",()=>{task.done=check.checked;saveTasks();});
+  const name=document.createElement("span"); name.className="task-name"; name.textContent=task.text;
+  const tag=document.createElement("span"); tag.className="tag"+(task.tag==="업무"?" work":""); tag.textContent=task.tag||"할 일";
+  const del=document.createElement("button"); del.className="del"; del.type="button"; del.textContent="×"; del.title="삭제";
+  del.addEventListener("click",()=>{tasks=tasks.filter(t=>t.id!==task.id);saveTasks();});
+  row.append(check,name,tag,del); list.append(row);
+ });
+ const total=tasks.length,done=tasks.filter(t=>t.done).length,left=total-done,pct=total?Math.round(done/total*100):0;
+ $("totalCount").textContent=total;$("doneCount").textContent=done;$("leftCount").textContent=left;
+ $("percent").textContent=pct+"%";$("progressFill").style.width=pct+"%";
+ $("progressMessage").textContent=total===0?"첫 번째 할 일을 등록해 볼까요?":pct===100?"와아! 오늘의 할 일을 모두 끝냈어요. 최고야! 🎉":pct>=60?"정말 잘하고 있어요! 조금만 더 힘내봐요 💗":"작은 한 걸음부터 시작해 봐요. 양양이 화이팅!";
+}
+$("taskForm").addEventListener("submit",e=>{
+ e.preventDefault();const value=$("taskInput").value.trim();if(!value)return;
+ tasks.push({id:Date.now(),text:value,done:false,tag:"할 일"});$("taskInput").value="";saveTasks();
+});
+const memo=$("memo");memo.value=localStorage.getItem("yangyang_memo")||"";
+memo.addEventListener("input",()=>{localStorage.setItem("yangyang_memo",memo.value);$("saveStatus").textContent="● 저장 완료";});
+const now=new Date();
+$("todayLabel").textContent=now.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"})+" ✿";
+const week=$("weekGrid");
+const start=new Date(now);start.setDate(now.getDate()-now.getDay());
+["일","월","화","수","목","금","토"].forEach((d,i)=>{
+ const date=new Date(start);date.setDate(start.getDate()+i);
+ const el=document.createElement("div");el.className="day"+(date.toDateString()===now.toDateString()?" today":"");
+ const label=document.createElement("span");label.textContent=d;
+ const num=document.createElement("b");num.textContent=date.getDate();
+ el.append(label,num);if(date.toDateString()===now.toDateString()){const dot=document.createElement("i");dot.className="dot";el.append(dot);}week.append(el);
+});
+render();
+</script>
+</body>
+</html>
