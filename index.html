@@ -1,195 +1,264 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>양양이의 프로젝트 다꾸 관리실</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HD PROJECT HUB | 사내 프로젝트 플랫폼</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap');
-:root{
- --pink:#f6a9c8;--pink2:#ffe0ec;--rose:#d96d9b;--lav:#dcd4ff;--lav2:#f0edff;
- --yellow:#ffe9a8;--mint:#d7f1e8;--cream:#fffaf5;--ink:#594957;--muted:#9b8998;
- --line:#f2dce7;--white:#fff;--shadow:0 12px 30px rgba(196,126,157,.12)
-}
-*{box-sizing:border-box}
-body{margin:0;background-color:#fff7fa;background-image:radial-gradient(#f7cddd 1px,transparent 1px);background-size:18px 18px;color:var(--ink);font-family:'Gowun Dodum',sans-serif}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-.wrap{max-width:1180px;margin:auto;padding:28px 22px 50px}
-.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;color:var(--muted);font-size:13px}
-.logo{font-family:'Jua';color:var(--rose);letter-spacing:.4px}
-.date-pill{background:#fff;border:1px solid var(--line);border-radius:99px;padding:8px 14px}
-.hero{position:relative;overflow:hidden;background:linear-gradient(120deg,#ffe4ee,#f3eaff 65%,#fff1d6);border:2px solid #fff;border-radius:30px;padding:34px 36px;box-shadow:var(--shadow);margin-bottom:22px}
-.hero:before{content:"✿";position:absolute;right:7%;top:-25px;font-size:145px;color:#fff8;transform:rotate(15deg)}
-.hero:after{content:"♡";position:absolute;right:24%;bottom:-35px;font-size:110px;color:#fff9;transform:rotate(-15deg)}
-.hero-inner{position:relative;z-index:1;max-width:720px}
-.eyebrow{display:inline-block;background:#fff9;border:1px dashed #e9a9c3;border-radius:99px;padding:6px 12px;font-size:12px;color:#b45f87;margin-bottom:12px}
-h1{font-family:'Jua';font-size:clamp(30px,5vw,48px);line-height:1.2;margin:0 0 10px;color:#754c69}
-.hero p{margin:0;color:#876b80;font-size:15px;line-height:1.7}
-.hero-sticker{position:absolute;right:7%;bottom:24px;font-size:46px;transform:rotate(8deg);filter:drop-shadow(0 5px 4px #dca9bf66)}
-.grid{display:grid;grid-template-columns:1.35fr .85fr;gap:18px;align-items:start}
-.card{background:#fff;border:1.5px solid var(--line);border-radius:23px;padding:21px;box-shadow:var(--shadow);position:relative}
-.card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
-.card-title h2{font:20px 'Jua';margin:0;color:#76566f}
-.tiny-label{font-size:11px;background:var(--pink2);color:#b65f88;padding:5px 9px;border-radius:99px;white-space:nowrap}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
-.stat{border-radius:18px;padding:15px;background:#fff7fa;border:1px dashed #f0c8d9}
-.stat:nth-child(2){background:#f7f4ff;border-color:#d9d0fa}
-.stat:nth-child(3){background:#fff9e9;border-color:#f5df9f}
-.stat .emoji{font-size:21px}.stat strong{display:block;font:25px 'Jua';margin:7px 0 2px;color:#79566e}
-.stat span{font-size:12px;color:var(--muted)}
-.progress-head{display:flex;justify-content:space-between;font-size:13px;margin:8px 0}
-.progress-track{height:13px;border-radius:99px;background:#f8eaf0;overflow:hidden;border:1px solid #f5dce7}
-.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#f4a4c4,#c8b9f5);border-radius:99px;transition:width .3s}
-.progress-note{font-size:12px;color:var(--muted);margin-top:9px}
-.task-list{display:flex;flex-direction:column;gap:9px}
-.task{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:15px;background:#fffbfd;border:1px solid #f6e7ee}
-.task.done{opacity:.62;background:#f8f7fb}
-.task input[type=checkbox]{accent-color:#df83aa;width:17px;height:17px;flex-shrink:0}
-.task-name{flex:1;font-size:14px;min-width:0;overflow-wrap:anywhere}
-.task.done .task-name{text-decoration:line-through;color:#a99aa7}
-.tag{font-size:11px;border-radius:99px;padding:4px 8px;background:#f0edff;color:#8472bd;white-space:nowrap}
-.tag.work{background:#fff0d0;color:#a47b36}.tag.urgent{background:#ffe6ec;color:#c66a89}
-.del{border:0;background:transparent;color:#c5a9b8;font-size:16px;padding:2px 5px}
-.add-row{display:flex;gap:8px;margin-top:13px}
-.add-row input{min-width:0;flex:1;border:1px solid var(--line);border-radius:12px;padding:11px 12px;outline:none;background:#fffafd}
-.add-row input:focus,textarea:focus{border-color:#e89abb;box-shadow:0 0 0 3px #fbe6ef}
-.add-btn{border:0;border-radius:12px;padding:0 16px;background:#e98db5;color:#fff;font-family:'Jua';font-size:14px}
-.side-stack{display:flex;flex-direction:column;gap:18px}
-.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.day{border-radius:12px;background:#fff8fb;text-align:center;padding:9px 2px;border:1px solid #f5e4ec;font-size:11px;color:#9a8494}
-.day b{display:block;font:16px 'Jua';margin-top:5px;color:#76566f}
-.day.today{background:#fce1ec;border:1px solid #e9a5c1}
-.day .dot{display:block;width:5px;height:5px;border-radius:50%;background:#d98aae;margin:5px auto 0}
-.schedule{display:flex;flex-direction:column;gap:10px}
-.event{display:flex;gap:11px;align-items:flex-start}
-.event-time{min-width:52px;font:13px 'Jua';color:#b56c91;background:#fff0f6;border-radius:9px;padding:6px;text-align:center}
-.event-text{font-size:13px;line-height:1.45;padding-top:4px}
-.event-text small{display:block;color:#a895a3;font-size:11px;margin-top:3px}
-.memo{width:100%;min-height:112px;resize:vertical;border:1px dashed #e9bfd1;border-radius:14px;background:repeating-linear-gradient(#fffafd 0,#fffafd 27px,#f8e8ef 28px);padding:11px 13px;line-height:28px;outline:none;color:var(--ink)}
-.memo-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:11px;color:#ae9ba8}
-.save-dot{color:#71a995}
-.quote{margin-top:18px;text-align:center;color:#a7869b;font-size:13px}
-.quote b{color:#d77da4;font-family:'Jua';font-weight:normal}
-.footer{text-align:center;color:#b5a1af;font-size:11px;margin-top:24px}
-.sticker{position:absolute;right:18px;top:-12px;background:#fff0a9;border:2px solid white;border-radius:50%;width:42px;height:42px;display:grid;place-items:center;transform:rotate(10deg);box-shadow:0 4px 9px #d9b9a455;font-size:21px}
-@media(max-width:800px){.grid{grid-template-columns:1fr}.hero{padding:27px 23px}.hero-sticker{right:20px;bottom:15px;font-size:34px}.wrap{padding:18px 13px 35px}}
-@media(max-width:430px){.stats{gap:7px}.stat{padding:11px 9px}.stat strong{font-size:22px}.card{padding:16px}.topline{font-size:11px}}
+:root{--navy:#07162e;--navy2:#0c2142;--blue:#2868d7;--royal:#397df2;--cyan:#58d5e8;--gold:#ffbd59;--ink:#17243a;--muted:#718096;--line:#e7edf5;--bg:#f4f7fc}
+*{box-sizing:border-box}body{margin:0;font-family:'Nanum Gothic',sans-serif;color:var(--ink);background:var(--bg)}button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}.wrap{max-width:1180px;margin:auto;padding:0 24px}
+.topbar{height:76px;background:rgba(5,19,41,.97);color:#fff;display:flex;align-items:center;position:sticky;top:0;z-index:20;border-bottom:1px solid #ffffff18}.nav{display:flex;align-items:center;justify-content:space-between;width:100%;gap:20px}.brand{font-weight:800;letter-spacing:.4px;font-size:19px}.brand em{color:#68a5ff;font-style:normal}.navlinks{display:flex;gap:7px;align-items:center}.navlinks button{background:transparent;color:#cbd8ec;padding:11px 13px;border-radius:9px;font-size:13px}.navlinks button.active,.navlinks button:hover{background:#ffffff16;color:#fff}.navright{display:flex;gap:9px;align-items:center}.btn{padding:11px 16px;border-radius:9px;font-weight:700;font-size:13px;transition:.2s}.btn-primary{background:linear-gradient(135deg,var(--blue),var(--royal));color:#fff;box-shadow:0 8px 20px #2868d733}.btn-outline{background:transparent;border:1px solid #ffffff55;color:#fff}.btn-light{background:#edf3ff;color:#2457ad}.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.hero{min-height:540px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 75% 30%,#174b91 0,transparent 40%),linear-gradient(120deg,#06152d,#0b2b56 60%,#102f5c);color:#fff;display:flex;align-items:center}.hero:before,.hero:after{content:"";position:absolute;border:1px solid #8bbaff22;border-radius:50%;width:650px;height:650px;right:-100px;top:-240px;animation:orbit 26s linear infinite}.hero:after{width:850px;height:850px;right:-200px;top:-340px;animation-duration:40s;border-style:dashed}@keyframes orbit{to{transform:rotate(360deg)}}.gridfx{position:absolute;inset:0;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(90deg,black,transparent 90%);animation:gridmove 18s linear infinite}@keyframes gridmove{to{background-position:48px 48px}}.hero-content{position:relative;z-index:2;padding:88px 0;max-width:710px}.eyebrow{display:inline-flex;align-items:center;gap:9px;color:#9fc5ff;font-size:12px;letter-spacing:2px;font-weight:800;margin-bottom:24px}.dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan)}h1{font-size:clamp(34px,5vw,58px);line-height:1.28;letter-spacing:-2px;margin:0 0 20px;font-weight:800}.gradient{background:linear-gradient(90deg,#73b5ff,#62e1e3);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{color:#c2d4ed;line-height:1.9;font-size:15px;max-width:590px}.hero-actions{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}.hero-stats{display:flex;gap:36px;margin-top:48px}.stat strong{display:block;font-size:24px;color:#fff}.stat span{font-size:11px;color:#9fb4d1;display:block;margin-top:7px}
+.section{padding:72px 0}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:26px;gap:20px}.kicker{color:var(--blue);font-size:11px;font-weight:800;letter-spacing:1.8px}.section h2{font-size:27px;margin:9px 0 0;letter-spacing:-1px}.section-sub{color:var(--muted);font-size:13px;line-height:1.8}.board-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.board-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;min-height:185px;cursor:pointer;transition:.25s;box-shadow:0 8px 24px #122b4a08}.board-card:hover{transform:translateY(-5px);border-color:#b7d0ff;box-shadow:0 18px 36px #1d4d9014}.board-icon{width:43px;height:43px;border-radius:13px;background:#edf4ff;color:var(--blue);display:grid;place-items:center;font-size:20px;margin-bottom:18px}.board-card h3{margin:0 0 9px;font-size:16px}.board-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.7}.board-card small{display:block;color:#3876d8;margin-top:17px;font-weight:700}
+.content-layout{display:grid;grid-template-columns:1fr 300px;gap:22px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}.panel-title h3{margin:0;font-size:17px}.post-list{display:flex;flex-direction:column}.post{padding:17px 0;border-top:1px solid var(--line);display:flex;gap:14px;align-items:center;cursor:pointer}.post:first-child{border-top:0}.tag{font-size:10px;font-weight:800;color:#2868d7;background:#edf4ff;padding:6px 8px;border-radius:6px;white-space:nowrap}.post-main{min-width:0;flex:1}.post-main strong{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.post-main small{color:#8794a7;font-size:11px;display:block;margin-top:7px}.post-count{font-size:11px;color:#91a0b4}.sidebox{background:linear-gradient(145deg,#0b2040,#153b70);color:#fff;border-radius:16px;padding:23px;margin-bottom:16px}.sidebox h3{margin:0 0 10px;font-size:17px}.sidebox p{color:#b7cbe7;font-size:12px;line-height:1.8}.sidebox .btn{margin-top:9px}.notice-line{padding:13px 0;border-top:1px solid #ffffff20;font-size:12px;color:#d4e1f3;line-height:1.6}.notice-line:first-of-type{border:0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.step{padding:24px;background:#fff;border:1px solid var(--line);border-radius:15px}.step b{color:#8bb5f8;font-size:27px}.step h3{font-size:15px;margin:15px 0 8px}.step p{font-size:12px;color:var(--muted);line-height:1.8;margin:0}
+.footer{background:#06152d;color:#aebed4;padding:34px 0;font-size:11px}.footer-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.board-view{display:none;padding:42px 0 80px}.board-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;gap:15px;flex-wrap:wrap}.board-toolbar h2{margin:0;font-size:25px}.filters{display:flex;gap:8px;align-items:center}.filters input{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:#fff;min-width:210px}.empty{padding:48px 15px;text-align:center;color:#8290a4;font-size:13px}.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.gallery-item{border:1px solid var(--line);background:#fff;border-radius:13px;overflow:hidden;cursor:pointer}.gallery-item img{width:100%;height:175px;object-fit:cover;background:#e8eef7}.gallery-item div{padding:13px}.gallery-item strong{font-size:13px}.gallery-item small{display:block;color:#8996a8;margin-top:7px;font-size:11px}
+.modal{position:fixed;inset:0;background:#06152dcc;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal.show{display:flex}.modal-card{background:#fff;border-radius:17px;padding:26px;width:min(100%,480px);max-height:90vh;overflow:auto;box-shadow:0 25px 80px #0004}.modal-card h3{margin:0 0 18px;font-size:20px}.field{margin:13px 0}.field label{font-size:11px;font-weight:800;display:block;margin-bottom:7px;color:#56657a}.field input,.field textarea,.field select{width:100%;border:1px solid #dce4ef;border-radius:9px;padding:12px;font-size:13px;outline:none}.field textarea{min-height:130px;resize:vertical}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.muted{color:var(--muted)}.hidden{display:none!important}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#102746;color:#fff;padding:12px 18px;border-radius:10px;font-size:12px;z-index:80;box-shadow:0 8px 30px #0003;display:none}.config-note{background:#fff8e8;border:1px solid #ffe1a3;padding:13px 15px;border-radius:10px;color:#79551b;font-size:12px;line-height:1.7;margin:16px 0}
+@media(max-width:900px){.navlinks{display:none}.board-grid{grid-template-columns:repeat(2,1fr)}.content-layout{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.gallery{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.wrap{padding:0 17px}.topbar{height:66px}.brand{font-size:16px}.navright .btn-outline{display:none}.hero{min-height:520px}.hero-content{padding:70px 0}.hero-stats{gap:19px}.stat strong{font-size:20px}.board-grid{grid-template-columns:1fr 1fr;gap:10px}.board-card{padding:16px;min-height:170px}.section{padding:55px 0}.section-head{display:block}.gallery{grid-template-columns:1fr}.panel{padding:17px}.post{gap:8px}.tag{font-size:9px}.post-count{display:none}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="topline"><div class="logo">୨୧ YANGYANG STUDIO</div><div class="date-pill" id="todayLabel">오늘도 차근차근 ✿</div></div>
-  <header class="hero">
-    <div class="hero-inner">
-      <div class="eyebrow">♡ MY LITTLE PROJECT ROOM ♡</div>
-      <h1>양양이의 프로젝트 관리실</h1>
-      <p>복잡한 일도 귀엽게 하나씩!<br>오늘의 할 일을 체크하고, 작은 성취를 모아봐요 🌷</p>
-    </div>
-    <div class="hero-sticker">🎀</div>
-  </header>
+<header class="topbar"><div class="wrap nav">
+  <div class="brand">HD <em>PROJECT HUB</em></div>
+  <nav class="navlinks"><button class="active" data-go="home">홈</button><button data-board="notice">공지사항</button><button data-board="free">자유게시판</button><button data-board="archive">자료실</button><button data-board="gallery">갤러리</button></nav>
+  <div class="navright"><span id="userLabel" style="font-size:11px;color:#b9cbe4"></span><button class="btn btn-outline" id="loginBtn">로그인</button><button class="btn btn-primary" id="signupBtn">회원가입</button><button class="btn btn-outline hidden" id="logoutBtn">로그아웃</button></div>
+</div></header>
 
-  <section class="stats">
-    <div class="stat"><div class="emoji">🧸</div><strong id="totalCount">0</strong><span>전체 할 일</span></div>
-    <div class="stat"><div class="emoji">🌸</div><strong id="doneCount">0</strong><span>완료한 일</span></div>
-    <div class="stat"><div class="emoji">✨</div><strong id="leftCount">0</strong><span>남은 할 일</span></div>
-  </section>
+<main id="homePage">
+<section class="hero"><div class="gridfx"></div><div class="wrap"><div class="hero-content">
+  <div class="eyebrow"><span class="dot"></span> INTERNAL PROJECT COMMUNITY</div>
+  <h1>함께 만드는 변화,<br><span class="gradient">프로젝트의 시작</span></h1>
+  <p>사내 프로젝트의 소식과 아이디어를 나누고, 필요한 자료를 함께 축적하는 공간입니다. 작은 제안이 의미 있는 성과로 이어질 수 있도록 지금 참여해 보세요.</p>
+  <div class="hero-actions"><button class="btn btn-primary" onclick="document.getElementById('join').scrollIntoView({behavior:'smooth'})">프로젝트 참여 안내 <span>→</span></button><button class="btn btn-outline" onclick="openBoard('notice')">공지사항 확인</button></div>
+  <div class="hero-stats"><div class="stat"><strong>01</strong><span>정보 공유</span></div><div class="stat"><strong>02</strong><span>아이디어 제안</span></div><div class="stat"><strong>03</strong><span>성과 아카이브</span></div></div>
+</div></div></section>
 
-  <main class="grid">
-    <div class="main-stack">
-      <section class="card">
-        <div class="sticker">💗</div>
-        <div class="card-title"><h2>오늘의 프로젝트 진행률</h2><span class="tiny-label">GROW AT YOUR OWN PACE</span></div>
-        <div class="progress-head"><span>나의 반짝이는 진척도</span><b id="percent">0%</b></div>
-        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-        <div class="progress-note" id="progressMessage">첫 번째 할 일을 등록해 볼까요?</div>
-      </section>
+<section class="section"><div class="wrap">
+  <div class="section-head"><div><div class="kicker">COMMUNITY BOARD</div><h2>프로젝트 커뮤니티</h2></div><div class="section-sub">필요한 정보를 찾고, 동료들과 생각을 나눠보세요.</div></div>
+  <div class="board-grid">
+    <article class="board-card" onclick="openBoard('notice')"><div class="board-icon">📢</div><h3>공지사항</h3><p>프로젝트 일정, 주요 안내와 운영 공지를 확인하세요.</p><small>NOTICE BOARD →</small></article>
+    <article class="board-card" onclick="openBoard('free')"><div class="board-icon">✦</div><h3>자유게시판</h3><p>웹진 스타일로 아이디어와 프로젝트 이야기를 공유하세요.</p><small>PROJECT WEBZINE →</small></article>
+    <article class="board-card" onclick="openBoard('archive')"><div class="board-icon">📁</div><h3>자료실</h3><p>업무 참고자료와 프로젝트 파일을 안전하게 보관하세요.</p><small>RESOURCE ARCHIVE →</small></article>
+    <article class="board-card" onclick="openBoard('gallery')"><div class="board-icon">▧</div><h3>갤러리</h3><p>현장 사진과 활동 기록을 이미지로 공유하세요.</p><small>PHOTO GALLERY →</small></article>
+  </div>
+</div></section>
 
-      <section class="card" style="margin-top:18px">
-        <div class="card-title"><h2>📝 해야 할 일 리스트</h2><span class="tiny-label">TO-DO LIST</span></div>
-        <div class="task-list" id="taskList"></div>
-        <form class="add-row" id="taskForm">
-          <input id="taskInput" maxlength="80" placeholder="새로운 할 일을 적어주세요..." aria-label="새 할 일">
-          <button class="add-btn" type="submit">+ 추가</button>
-        </form>
-      </section>
+<section class="section" style="padding-top:0"><div class="wrap content-layout">
+  <div class="panel"><div class="panel-title"><h3>최근 프로젝트 소식</h3><button class="btn btn-light" onclick="openBoard('free')">전체 보기 →</button></div><div id="recentPosts" class="post-list"><div class="empty">Supabase에 연결하면 최신 게시물이 표시됩니다.</div></div></div>
+  <aside><div class="sidebox"><div class="kicker" style="color:#8dbaff">GET INVOLVED</div><h3>당신의 참여가<br>프로젝트를 만듭니다.</h3><p>회원가입 후 프로젝트 소식 확인, 의견 제안, 자료 공유에 참여할 수 있습니다.</p><button class="btn btn-primary" onclick="openAuth('signup')">멤버로 참여하기 →</button></div><div class="panel"><div class="panel-title"><h3>운영 안내</h3></div><div class="notice-line" style="color:#53647b;border-color:#edf1f7">01. 사내 구성원 계정으로 가입해 주세요.</div><div class="notice-line" style="color:#53647b;border-color:#edf1f7">02. 게시글 작성과 자료 업로드는 로그인 후 이용할 수 있습니다.</div><div class="notice-line" style="color:#53647b;border-color:#edf1f7">03. 개인정보 및 사내 기밀자료 게시에 유의해 주세요.</div></div></aside>
+</div></section>
 
-      <section class="card" style="margin-top:18px">
-        <div class="card-title"><h2>💌 양양이의 오늘 메모</h2><span class="tiny-label">LITTLE DIARY</span></div>
-        <textarea class="memo" id="memo" placeholder="아이디어, 회의 내용, 잊지 말아야 할 것들을 자유롭게 적어봐요."></textarea>
-        <div class="memo-foot"><span>여기에 적은 메모는 이 브라우저에 자동 저장돼요.</span><span class="save-dot" id="saveStatus">● 자동 저장</span></div>
-      </section>
-    </div>
+<section class="section" id="join" style="background:#edf3fb"><div class="wrap">
+  <div class="section-head"><div><div class="kicker">HOW TO JOIN</div><h2>프로젝트 참여 방법</h2></div><div class="section-sub">간단한 세 단계로 커뮤니티에 참여할 수 있습니다.</div></div>
+  <div class="steps"><div class="step"><b>01</b><h3>회원가입 및 로그인</h3><p>업무용 이메일과 기본 정보를 입력해 계정을 만들고 로그인합니다. 이메일 인증이 활성화된 경우 인증 메일을 확인해 주세요.</p></div><div class="step"><b>02</b><h3>프로젝트 소식 확인</h3><p>공지사항에서 진행 일정과 참여 방법을 확인하고, 자유게시판에서 의견과 아이디어를 나눕니다.</p></div><div class="step"><b>03</b><h3>자료 공유 및 활동 참여</h3><p>자료실과 갤러리에 참고자료와 활동 기록을 공유하고 프로젝트 운영에 함께합니다.</p></div></div>
+</div></section>
+</main>
 
-    <aside class="side-stack">
-      <section class="card">
-        <div class="card-title"><h2>🗓 이번 주 한눈에</h2><span class="tiny-label">WEEKLY</span></div>
-        <div class="week" id="weekGrid"></div>
-        <div class="quote">이번 주도 <b>나답게, 천천히!</b> 🌼</div>
-      </section>
-      <section class="card">
-        <div class="card-title"><h2>📌 프로젝트 루틴</h2><span class="tiny-label">MY FLOW</span></div>
-        <div class="schedule">
-          <div class="event"><div class="event-time">AM 9:00</div><div class="event-text">오늘 할 일 정리하기<small>우선순위부터 가볍게 체크</small></div></div>
-          <div class="event"><div class="event-time">AM 11:00</div><div class="event-text">집중 작업 타임<small>하나씩 끝내는 데 집중하기</small></div></div>
-          <div class="event"><div class="event-time">PM 2:00</div><div class="event-text">진행 상황 확인하기<small>막힌 부분은 메모해 두기</small></div></div>
-          <div class="event"><div class="event-time">PM 5:00</div><div class="event-text">오늘의 성과 기록하기<small>작은 진전도 충분히 멋져요</small></div></div>
-        </div>
-      </section>
-      <section class="card">
-        <div class="card-title"><h2>🌷 오늘의 응원 한마디</h2></div>
-        <p style="font-size:14px;line-height:1.8;margin:0;color:#8e7487">완벽하게 해내지 않아도 괜찮아. 오늘 한 걸음 내디딘 것만으로도 충분히 잘하고 있어! <b style="color:#d77da4">양양이 화이팅 ♡</b></p>
-      </section>
-    </aside>
-  </main>
-  <div class="footer">MADE WITH ♡ BY YANGYANG · 나만의 작은 프로젝트 다꾸 관리실</div>
-</div>
+<section class="board-view" id="boardPage"><div class="wrap">
+  <div class="board-toolbar"><div><div class="kicker">HD PROJECT HUB / COMMUNITY</div><h2 id="boardTitle">공지사항</h2><div class="section-sub" id="boardDesc"></div></div><div class="filters"><input id="searchInput" placeholder="게시물 검색"><button class="btn btn-primary" id="writeBtn">글쓰기 +</button></div></div>
+  <div id="boardContent" class="panel"><div class="empty">게시물을 불러오는 중입니다.</div></div>
+</div></section>
+
+<footer class="footer"><div class="wrap footer-row"><div><strong style="color:#fff">HD PROJECT HUB</strong><br><br>사내 프로젝트 정보 공유 및 참여 플랫폼</div><div>운영 : 홍보실 · 내부 구성원 전용 커뮤니티<br><br>© HD PROJECT HUB. All rights reserved.</div></div></footer>
+
+<div class="modal" id="authModal"><div class="modal-card"><h3 id="authTitle">로그인</h3>
+  <div class="field"><label>이메일</label><input id="authEmail" type="email" placeholder="name@company.com" autocomplete="email"></div>
+  <div class="field"><label>비밀번호</label><input id="authPassword" type="password" placeholder="비밀번호 (6자 이상)" minlength="6" autocomplete="current-password"></div>
+  <div id="signupFields" class="hidden"><div class="field"><label>이름</label><input id="authName" placeholder="이름"></div><div class="field"><label>부서</label><input id="authDept" placeholder="부서명 (선택)"></div></div>
+  <p id="authHint" class="muted" style="font-size:11px;line-height:1.7">가입한 이메일과 비밀번호로 로그인하세요.</p>
+  <div class="modal-actions"><button class="btn btn-light" onclick="closeModal('authModal')">취소</button><button class="btn btn-primary" id="authSubmit">로그인</button></div>
+</div></div>
+
+<div class="modal" id="postModal"><div class="modal-card"><h3 id="postModalTitle">게시물 작성</h3>
+  <div class="field"><label>제목</label><input id="postTitle" placeholder="제목을 입력하세요"></div>
+  <div class="field"><label>내용</label><textarea id="postBody" placeholder="내용을 입력하세요"></textarea></div>
+  <div class="field" id="fileField"><label>첨부파일 / 이미지 (선택)</label><input id="postFile" type="file"></div>
+  <div class="modal-actions"><button class="btn btn-light" onclick="closeModal('postModal')">취소</button><button class="btn btn-primary" id="postSubmit">등록하기</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+
 <script>
-const initialTasks = [
- {id:1,text:"이번 주 프로젝트 목표 정리하기",done:false,tag:"계획"},
- {id:2,text:"진행 중인 업무 확인하기",done:false,tag:"업무"},
- {id:3,text:"필요한 자료 및 파일 정리하기",done:true,tag:"정리"}
-];
-let tasks;
-try { tasks = JSON.parse(localStorage.getItem("yangyang_tasks")) || initialTasks; }
-catch(e){ tasks = initialTasks; }
-const $ = id => document.getElementById(id);
-function saveTasks(){localStorage.setItem("yangyang_tasks",JSON.stringify(tasks));render();}
-function render(){
- const list=$("taskList"); list.innerHTML="";
- tasks.forEach(task=>{
-  const row=document.createElement("div"); row.className="task"+(task.done?" done":"");
-  const check=document.createElement("input"); check.type="checkbox"; check.checked=task.done; check.setAttribute("aria-label","완료 여부");
-  check.addEventListener("change",()=>{task.done=check.checked;saveTasks();});
-  const name=document.createElement("span"); name.className="task-name"; name.textContent=task.text;
-  const tag=document.createElement("span"); tag.className="tag"+(task.tag==="업무"?" work":""); tag.textContent=task.tag||"할 일";
-  const del=document.createElement("button"); del.className="del"; del.type="button"; del.textContent="×"; del.title="삭제";
-  del.addEventListener("click",()=>{tasks=tasks.filter(t=>t.id!==task.id);saveTasks();});
-  row.append(check,name,tag,del); list.append(row);
- });
- const total=tasks.length,done=tasks.filter(t=>t.done).length,left=total-done,pct=total?Math.round(done/total*100):0;
- $("totalCount").textContent=total;$("doneCount").textContent=done;$("leftCount").textContent=left;
- $("percent").textContent=pct+"%";$("progressFill").style.width=pct+"%";
- $("progressMessage").textContent=total===0?"첫 번째 할 일을 등록해 볼까요?":pct===100?"와아! 오늘의 할 일을 모두 끝냈어요. 최고야! 🎉":pct>=60?"정말 잘하고 있어요! 조금만 더 힘내봐요 💗":"작은 한 걸음부터 시작해 봐요. 양양이 화이팅!";
+/* Supabase 프로젝트 설정: 아래 두 값을 본인의 전체 값으로 교체하세요. */
+const SUPABASE_URL = "https://aqgwdnucnqkwjyuhghwd.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_tgYmXMTdFjwp2G3tQKxH6g_sLh7gk2x"; // 공개용 Publishable Key
+const STORAGE_BUCKET = "project-files";
+
+let supabase = null, currentUser = null, currentProfile = null, activeBoard = "notice", authMode = "login";
+const boards = {
+ notice:{title:"공지사항",desc:"프로젝트 운영과 주요 일정을 안내합니다.",tag:"공지"},
+ free:{title:"자유게시판",desc:"아이디어와 프로젝트 이야기를 웹진 형태로 나눠보세요.",tag:"웹진"},
+ archive:{title:"자료실",desc:"프로젝트 관련 문서와 참고자료를 공유합니다.",tag:"자료"},
+ gallery:{title:"갤러리",desc:"프로젝트 활동과 현장 기록을 사진으로 남깁니다.",tag:"갤러리"}
+};
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.style.display="block";setTimeout(()=>el.style.display="none",3000)}
+function connected(){return !!supabase}
+function initSupabase(){
+ if(!window.supabase){toast("Supabase 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.");return}
+ if(!SUPABASE_URL.startsWith("https://") || !SUPABASE_PUBLISHABLE_KEY.startsWith("sb_publishable_")){
+  console.error("Supabase URL 또는 Publishable Key 형식을 확인해 주세요.");
+  toast("Supabase URL 또는 Publishable Key 설정을 확인해 주세요.");
+  return;
+ }
+ try{
+  supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
+   auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+  });
+  supabase.auth.onAuthStateChange((event,session)=>{
+   currentUser=session?.user||null;
+   // Defer profile/database work out of the auth callback to avoid blocking auth events.
+   setTimeout(()=>{refreshUser();loadRecent();if(document.getElementById("boardPage").style.display==="block")loadBoard();},0);
+  });
+  supabase.auth.getSession().then(({data,error})=>{
+   if(error)throw error;
+   currentUser=data.session?.user||null;
+   refreshUser();loadRecent();
+  }).catch(err=>{console.error("Supabase session error:",err);toast("로그인 상태를 확인하지 못했습니다. 새로고침해 주세요.");});
+ }catch(err){console.error("Supabase initialization error:",err);supabase=null;toast("Supabase 연결 설정을 확인해 주세요.");}
 }
-$("taskForm").addEventListener("submit",e=>{
- e.preventDefault();const value=$("taskInput").value.trim();if(!value)return;
- tasks.push({id:Date.now(),text:value,done:false,tag:"할 일"});$("taskInput").value="";saveTasks();
-});
-const memo=$("memo");memo.value=localStorage.getItem("yangyang_memo")||"";
-memo.addEventListener("input",()=>{localStorage.setItem("yangyang_memo",memo.value);$("saveStatus").textContent="● 저장 완료";});
-const now=new Date();
-$("todayLabel").textContent=now.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"})+" ✿";
-const week=$("weekGrid");
-const start=new Date(now);start.setDate(now.getDate()-now.getDay());
-["일","월","화","수","목","금","토"].forEach((d,i)=>{
- const date=new Date(start);date.setDate(start.getDate()+i);
- const el=document.createElement("div");el.className="day"+(date.toDateString()===now.toDateString()?" today":"");
- const label=document.createElement("span");label.textContent=d;
- const num=document.createElement("b");num.textContent=date.getDate();
- el.append(label,num);if(date.toDateString()===now.toDateString()){const dot=document.createElement("i");dot.className="dot";el.append(dot);}week.append(el);
-});
-render();
+async function refreshUser(){
+ const label=document.getElementById("userLabel");
+ document.getElementById("loginBtn").classList.toggle("hidden",!!currentUser);
+ document.getElementById("signupBtn").classList.toggle("hidden",!!currentUser);
+ document.getElementById("logoutBtn").classList.toggle("hidden",!currentUser);
+ label.textContent=currentUser?(currentUser.email||"회원"):"";
+ currentProfile=null;
+ if(currentUser && supabase){
+  try{
+   const {data,error}=await supabase.from("profiles").select("display_name,department,role").eq("id",currentUser.id).maybeSingle();
+   if(error)console.warn("Profile load warning:",error.message);
+   currentProfile=data||null;
+   label.textContent=data?.display_name||currentUser.email||"회원";
+  }catch(err){console.warn("Profile load error:",err);}
+ }
+}
+function openAuth(mode){
+ authMode=mode;
+ document.getElementById("authTitle").textContent=mode==="signup"?"회원가입":"로그인";
+ document.getElementById("authSubmit").textContent=mode==="signup"?"가입하기":"로그인";
+ document.getElementById("signupFields").classList.toggle("hidden",mode!=="signup");
+ document.getElementById("authHint").textContent=mode==="signup"?"가입 후 가입 후 이메일 인증 링크가 발송됩니다. 인증을 완료한 뒤 로그인해 주세요.":"가입한 이메일과 비밀번호로 로그인하세요.";
+ document.getElementById("authModal").classList.add("show");
+}
+function closeModal(id){document.getElementById(id).classList.remove("show")}
+function friendlyAuthError(message=""){
+ const m=message.toLowerCase();
+ if(m.includes("invalid login credentials"))return "이메일 또는 비밀번호가 올바르지 않습니다.";
+ if(m.includes("email not confirmed"))return "이메일 인증이 완료되지 않았습니다. 받은 편지함을 확인해 주세요.";
+ if(m.includes("user already registered"))return "이미 가입된 이메일입니다. 로그인해 주세요.";
+ if(m.includes("password should be at least"))return "비밀번호는 6자 이상으로 입력해 주세요.";
+ if(m.includes("rate limit"))return "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.";
+ if(m.includes("failed to fetch"))return "서버에 연결하지 못했습니다. 인터넷과 Supabase URL을 확인해 주세요.";
+ return message||"인증 처리 중 오류가 발생했습니다.";
+}
+async function submitAuth(){
+ if(!connected()){toast("HTML 상단의 SUPABASE_PUBLISHABLE_KEY에 전체 Publishable Key를 입력해 주세요.");return}
+ const email=document.getElementById("authEmail").value.trim();
+ const password=document.getElementById("authPassword").value;
+ if(!email){toast("이메일을 입력해 주세요.");return}
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast("올바른 이메일 주소를 입력해 주세요.");return}
+ if(!password || password.length<6){toast("비밀번호는 6자 이상으로 입력해 주세요.");return}
+ const submit=document.getElementById("authSubmit");
+ submit.disabled=true;submit.textContent="처리 중...";
+ try{
+  let result;
+  if(authMode==="signup"){
+   const name=document.getElementById("authName").value.trim();
+   const dept=document.getElementById("authDept").value.trim();
+   if(!name){toast("이름을 입력해 주세요.");return}
+   result=await supabase.auth.signUp({
+    email,password,
+    options:{data:{display_name:name,department:dept},emailRedirectTo:window.location.href.split("#")[0]}
+   });
+  }else{
+   result=await supabase.auth.signInWithPassword({email,password});
+  }
+  if(result.error){toast(friendlyAuthError(result.error.message));return}
+  closeModal("authModal");
+  if(authMode==="signup" && !result.data.session){
+   toast("가입 요청이 완료됐습니다. 이메일 인증 링크를 확인한 뒤 로그인해 주세요.");
+  }else if(authMode==="signup"){
+   toast("회원가입 및 로그인이 완료됐습니다.");
+  }else{
+   toast("로그인되었습니다.");
+  }
+  document.getElementById("authPassword").value="";
+ }catch(err){
+  console.error("Authentication error:",err);
+  toast(friendlyAuthError(err.message));
+ }finally{
+  submit.disabled=false;submit.textContent=authMode==="signup"?"가입하기":"로그인";
+ }
+}
+async function logout(){
+ if(!supabase)return;
+ try{
+  const {error}=await supabase.auth.signOut();
+  if(error)throw error;
+  currentUser=null;currentProfile=null;refreshUser();toast("로그아웃했습니다.");
+ }catch(err){toast("로그아웃 실패: "+friendlyAuthError(err.message));}
+}
+function goHome(){document.getElementById("homePage").style.display="block";document.getElementById("boardPage").style.display="none";window.scrollTo({top:0,behavior:"smooth"});document.querySelectorAll(".navlinks button").forEach(b=>b.classList.remove("active"));document.querySelector('[data-go="home"]').classList.add("active")}
+async function openBoard(key){activeBoard=key;document.getElementById("homePage").style.display="none";document.getElementById("boardPage").style.display="block";document.getElementById("boardTitle").textContent=boards[key].title;document.getElementById("boardDesc").textContent=boards[key].desc;document.getElementById("writeBtn").style.display=key==="notice"&&!currentUser?"none":"inline-block";document.querySelectorAll(".navlinks button").forEach(b=>b.classList.toggle("active",b.dataset.board===key));window.scrollTo({top:0,behavior:"smooth"});await loadBoard()}
+async function loadRecent(){
+ if(!connected())return;
+ const {data,error}=await supabase.from("posts").select("id,title,board_type,created_at,author_id").eq("is_published",true).order("created_at",{ascending:false}).limit(5);
+ if(error)return;
+ document.getElementById("recentPosts").innerHTML=data.length?data.map(p=>`<div class="post" onclick="openBoard('${p.board_type}')"><span class="tag">${boards[p.board_type]?.tag||"게시물"}</span><div class="post-main"><strong>${escapeHtml(p.title)}</strong><small>${new Date(p.created_at).toLocaleDateString("ko-KR")}</small></div><span class="post-count">보기 →</span></div>`).join(""):'<div class="empty">등록된 게시물이 없습니다.</div>';
+}
+function escapeHtml(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function loadBoard(){
+ const host=document.getElementById("boardContent");
+ if(!connected()){host.innerHTML='<div class="config-note">Supabase 연결 설정이 필요합니다. HTML 상단의 <b>SUPABASE_URL</b>과 <b>SUPABASE_PUBLISHABLE_KEY</b>를 실제 값으로 바꾼 뒤 새로고침하세요.</div>';return}
+ const {data,error}=await supabase.from("posts").select("id,title,content,board_type,created_at,author_id,thumbnail_url,file_name").eq("board_type",activeBoard).eq("is_published",true).order("created_at",{ascending:false});
+ if(error){host.innerHTML=`<div class="empty">게시물을 불러오지 못했습니다: ${escapeHtml(error.message)}</div>`;return}
+ const q=document.getElementById("searchInput").value.toLowerCase();
+ const rows=(data||[]).filter(p=>(p.title+" "+(p.content||"")).toLowerCase().includes(q));
+ if(!rows.length){host.innerHTML='<div class="empty">아직 등록된 게시물이 없습니다.</div>';return}
+ if(activeBoard==="gallery"){
+  const galleryRows = await Promise.all(rows.map(async p => {
+   if(p.file_path && p.file_name){const {data}=await supabase.storage.from(STORAGE_BUCKET).createSignedUrl(p.file_path,300);p.thumbnail_url=data?.signedUrl||null;}
+   return p;
+  }));
+  host.innerHTML='<div class="gallery">'+galleryRows.map(p=>`<article class="gallery-item" onclick="viewPost('${p.id}')"><img src="${p.thumbnail_url||'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800'}" alt=""><div><strong>${escapeHtml(p.title)}</strong><small>${new Date(p.created_at).toLocaleDateString("ko-KR")}</small></div></article>`).join("")+'</div>';
+ }else if(activeBoard==="free"){
+  host.innerHTML=rows.map(p=>`<article class="post" style="align-items:flex-start" onclick="viewPost('${p.id}')"><span class="tag">WEBZINE</span><div class="post-main"><strong style="font-size:15px;white-space:normal">${escapeHtml(p.title)}</strong><small>${escapeHtml((p.content||"").slice(0,120))}${(p.content||"").length>120?"…":""}</small><small>${new Date(p.created_at).toLocaleDateString("ko-KR")}</small></div></article>`).join("");
+ }else{
+  host.innerHTML='<div class="post-list">'+rows.map(p=>`<article class="post" onclick="viewPost('${p.id}')"><span class="tag">${boards[activeBoard].tag}</span><div class="post-main"><strong>${escapeHtml(p.title)}</strong><small>${new Date(p.created_at).toLocaleDateString("ko-KR")} · ${escapeHtml((p.content||"").slice(0,70))}</small></div>${p.file_name?'<span class="post-count">📎 파일</span>':""}</article>`).join("")+'</div>';
+ }
+}
+async function viewPost(id){
+ const {data:p,error}=await supabase.from("posts").select("*").eq("id",id).single();if(error){toast(error.message);return}
+ let fileLink="";
+ if(p.file_path){const {data}=await supabase.storage.from(STORAGE_BUCKET).createSignedUrl(p.file_path,300);if(data?.signedUrl)fileLink=`<p><a href="${data.signedUrl}" target="_blank" rel="noopener">첨부파일 다운로드: ${escapeHtml(p.file_name||"파일")}</a></p>`}
+ const w=window.open("","_blank","width=760,height=700");if(!w){toast("팝업이 차단되었습니다.");return}
+ w.document.write(`<!doctype html><meta charset="utf-8"><title>${escapeHtml(p.title)}</title><style>body{font-family:'Nanum Gothic',sans-serif;padding:36px;line-height:1.8;color:#17243a}h1{font-size:24px}small{color:#8090a5}article{white-space:pre-wrap;margin-top:30px}</style><small>${escapeHtml(boards[p.board_type]?.title||"게시물")} · ${new Date(p.created_at).toLocaleString("ko-KR")}</small><h1>${escapeHtml(p.title)}</h1>${fileLink}<article>${escapeHtml(p.content||"")}</article>`);
+}
+function openPostModal(){if(!currentUser){openAuth("login");toast("글쓰기는 로그인 후 이용할 수 있습니다.");return}document.getElementById("postTitle").value="";document.getElementById("postBody").value="";document.getElementById("postFile").value="";document.getElementById("postModalTitle").textContent=boards[activeBoard].title+" 작성";document.getElementById("postFile").accept=activeBoard==="gallery"?"image/*":"";document.getElementById("postModal").classList.add("show")}
+async function submitPost(){
+ if(!connected()||!currentUser){toast("로그인이 필요합니다.");return}
+ const title=document.getElementById("postTitle").value.trim(),content=document.getElementById("postBody").value.trim(),file=document.getElementById("postFile").files[0];
+ if(!title){toast("제목을 입력해 주세요.");return}
+ let file_path=null,thumbnail_url=null,file_name=null;
+ if(file){
+  const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"_"),path=`${currentUser.id}/${Date.now()}_${safe}`;
+  const {error:upErr}=await supabase.storage.from(STORAGE_BUCKET).upload(path,file,{upsert:false});
+  if(upErr){toast("파일 업로드 실패: "+upErr.message);return}
+  file_path=path;file_name=file.name;
+  if(file.type.startsWith("image/")){const {data}=supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);thumbnail_url=data.publicUrl}
+ }
+ const {error}=await supabase.from("posts").insert({board_type:activeBoard,title,content,author_id:currentUser.id,file_path,file_name,thumbnail_url,is_published:true});
+ if(error){toast("등록 실패: "+error.message);return}
+ closeModal("postModal");toast("게시물이 등록되었습니다.");await loadBoard();loadRecent();
+}
+document.querySelectorAll("[data-board]").forEach(b=>b.addEventListener("click",()=>openBoard(b.dataset.board)));
+document.querySelector('[data-go="home"]').addEventListener("click",goHome);
+document.getElementById("loginBtn").onclick=()=>openAuth("login");document.getElementById("signupBtn").onclick=()=>openAuth("signup");document.getElementById("logoutBtn").onclick=logout;
+document.getElementById("authSubmit").onclick=submitAuth;document.getElementById("writeBtn").onclick=openPostModal;document.getElementById("postSubmit").onclick=submitPost;
+document.getElementById("searchInput").addEventListener("input",()=>loadBoard());
+initSupabase();
 </script>
-</body>
-</html>
+</body></html>
